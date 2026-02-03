@@ -1,0 +1,693 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Trebuchet MS', cursive, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    background: linear-gradient(to bottom, #87CEEB 0%, #4DD0E1 50%, #26A69A 100%);
+}
+
+/* Ocean Game Container */
+.ocean-game {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header Styles */
+.sky-header {
+    position: relative;
+    z-index: 100;
+    background: linear-gradient(to bottom, #FFE082 0%, #FFD54F 100%);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.score-container {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.pearl-counter, .level-indicator, .high-score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #1A237E;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+}
+
+.pearl-icon, .trophy-icon {
+    font-size: 32px;
+    animation: gentle-bounce 2s ease-in-out infinite;
+}
+
+.pearl-count {
+    min-width: 50px;
+}
+
+.controls {
+    display: flex;
+    gap: 15px;
+}
+
+.sound-toggle, .menu-btn, .reset-btn {
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border: 3px solid #1A237E;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.sound-toggle {
+    background: white;
+    font-size: 24px;
+}
+
+.menu-btn {
+    background: #4DD0E1;
+    color: #1A237E;
+}
+
+.reset-btn {
+    background: #FF6B9D;
+    color: white;
+}
+
+.sound-toggle:hover, .menu-btn:hover, .reset-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.sound-toggle.muted::after {
+    content: '🔇';
+}
+
+/* Ocean Container */
+.ocean-container {
+    position: relative;
+    height: calc(100vh - 70px);
+    background: linear-gradient(to bottom, #80DEEA 0%, #4DD0E1 30%, #26A69A 70%, #1A5F7A 100%);
+    overflow: hidden;
+}
+
+/* Background Layer - Kelp and Coral */
+.background-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.kelp {
+    position: absolute;
+    bottom: 0;
+    width: 40px;
+    height: 200px;
+    background: linear-gradient(to top, #2E7D32, #66BB6A);
+    border-radius: 20px 20px 0 0;
+    animation: sway 4s ease-in-out infinite;
+}
+
+.kelp-1 { left: 10%; animation-delay: 0s; }
+.kelp-2 { left: 25%; height: 250px; animation-delay: 1s; }
+.kelp-3 { right: 15%; height: 180px; animation-delay: 2s; }
+
+.coral {
+    position: absolute;
+    bottom: 20px;
+    font-size: 60px;
+    animation: sway 6s ease-in-out infinite;
+}
+
+.coral-1 { left: 5%; animation-delay: 0.5s; }
+.coral-2 { right: 8%; animation-delay: 2s; }
+
+@keyframes sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+}
+
+/* Bubbles Layer */
+.bubbles-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.bubble {
+    position: absolute;
+    bottom: -50px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.3));
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: rise linear infinite;
+}
+
+.bubble-1 { left: 10%; width: 20px; height: 20px; animation-duration: 8s; animation-delay: 0s; }
+.bubble-2 { left: 30%; width: 15px; height: 15px; animation-duration: 6s; animation-delay: 2s; }
+.bubble-3 { left: 50%; width: 25px; height: 25px; animation-duration: 10s; animation-delay: 1s; }
+.bubble-4 { left: 70%; width: 18px; height: 18px; animation-duration: 7s; animation-delay: 3s; }
+.bubble-5 { left: 85%; width: 22px; height: 22px; animation-duration: 9s; animation-delay: 4s; }
+.bubble-6 { left: 60%; width: 16px; height: 16px; animation-duration: 7.5s; animation-delay: 5s; }
+
+@keyframes rise {
+    0% {
+        bottom: -50px;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.6;
+    }
+    100% {
+        bottom: 100%;
+        opacity: 0;
+    }
+}
+
+/* Ollie the Octopus */
+.character-container {
+    position: absolute;
+    left: 10%;
+    top: 20%;
+    z-index: 10;
+}
+
+.ollie-octopus {
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+}
+
+.ollie-body {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #AB47BC, #EC407A);
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.ollie-eyes {
+    position: absolute;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+}
+
+.eye {
+    width: 35px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    position: relative;
+    border: 3px solid #1A237E;
+}
+
+.pupil {
+    width: 15px;
+    height: 15px;
+    background: #1A237E;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: blink 4s ease-in-out infinite;
+}
+
+.ollie-smile {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 30px;
+    border: 4px solid #1A237E;
+    border-top: none;
+    border-radius: 0 0 60px 60px;
+}
+
+.tentacles {
+    position: absolute;
+    top: 140px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.tentacle {
+    width: 25px;
+    height: 80px;
+    background: linear-gradient(to bottom, #AB47BC, #EC407A);
+    border-radius: 0 0 15px 15px;
+    animation: wave-tentacle 2s ease-in-out infinite;
+}
+
+.tentacle.t1 { animation-delay: 0s; }
+.tentacle.t2 { animation-delay: 0.3s; }
+.tentacle.t3 { animation-delay: 0.6s; }
+.tentacle.t4 { animation-delay: 0.9s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
+
+@keyframes wave-tentacle {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+@keyframes blink {
+    0%, 95%, 100% { transform: translate(-50%, -50%) scaleY(1); }
+    97% { transform: translate(-50%, -50%) scaleY(0.1); }
+}
+
+@keyframes gentle-bounce {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Encouragement Bubble */
+.encouragement-bubble {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border: 3px solid #1A237E;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1A237E;
+    opacity: 0;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.encouragement-bubble.show {
+    opacity: 1;
+}
+
+.encouragement-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid white;
+}
+
+/* Word Display Area */
+.word-display-area {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 20;
+    width: 80%;
+    max-width: 600px;
+}
+
+.mode-indicator {
+    font-size: 22px;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.target-word-container {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.target-word {
+    font-size: 80px;
+    color: #FFD54F;
+    font-weight: bold;
+    text-shadow: 4px 4px 8px rgba(0,0,0,0.5),
+                 0 0 20px rgba(255,213,79,0.5);
+    margin-bottom: 10px;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { 
+        transform: scale(1);
+        text-shadow: 4px 4px 8px rgba(0,0,0,0.5),
+                     0 0 20px rgba(255,213,79,0.5);
+    }
+    50% { 
+        transform: scale(1.05);
+        text-shadow: 4px 4px 8px rgba(0,0,0,0.5),
+                     0 0 30px rgba(255,213,79,0.8);
+    }
+}
+
+.typed-letters {
+    font-size: 24px;
+    color: #B2DFDB;
+    min-height: 30px;
+    font-weight: bold;
+}
+
+.input-container {
+    position: relative;
+}
+
+.typing-input {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    font-size: 36px;
+    text-align: center;
+    border: 5px solid #1A237E;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.95);
+    color: #1A237E;
+    font-family: inherit;
+    font-weight: bold;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    outline: none;
+    transition: all 0.3s;
+}
+
+.typing-input:focus {
+    border-color: #FF6B9D;
+    box-shadow: 0 8px 20px rgba(255,107,157,0.5),
+                0 0 0 5px rgba(255,107,157,0.2);
+}
+
+.typing-input.correct {
+    animation: correct-pulse 0.5s;
+}
+
+.typing-input.incorrect {
+    animation: shake 0.5s;
+}
+
+@keyframes correct-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); background: #C8E6C9; }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.streak-indicator {
+    margin-top: 20px;
+    font-size: 28px;
+    color: white;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.streak-indicator.show {
+    opacity: 1;
+    animation: streak-bounce 0.5s;
+}
+
+.streak-star {
+    display: inline-block;
+    animation: rotate-star 2s linear infinite;
+}
+
+@keyframes rotate-star {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes streak-bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Decorative Swimming Fish */
+.decorative-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.swimming-fish {
+    position: absolute;
+    font-size: 40px;
+    animation: swim linear infinite;
+}
+
+.fish-1 {
+    top: 15%;
+    animation-duration: 20s;
+    animation-delay: 0s;
+}
+
+.fish-2 {
+    top: 60%;
+    animation-duration: 25s;
+    animation-delay: 5s;
+}
+
+.fish-3 {
+    top: 80%;
+    animation-duration: 18s;
+    animation-delay: 10s;
+}
+
+@keyframes swim {
+    0% {
+        left: -100px;
+        transform: scaleX(1);
+    }
+    49% {
+        transform: scaleX(1);
+    }
+    50% {
+        transform: scaleX(-1);
+    }
+    100% {
+        left: calc(100% + 100px);
+        transform: scaleX(-1);
+    }
+}
+
+/* Pearl Animation Container */
+.pearl-animation-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.animated-pearl {
+    position: absolute;
+    font-size: 40px;
+    animation: collect-pearl 1.5s ease-out forwards;
+}
+
+@keyframes collect-pearl {
+    0% {
+        transform: translate(0, 0) scale(0);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+        transform: translate(0, -50px) scale(1.5);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--target-x), var(--target-y)) scale(0.5);
+    }
+}
+
+/* Celebration Layer */
+.celebration-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 60;
+    pointer-events: none;
+}
+
+.confetti {
+    position: absolute;
+    font-size: 30px;
+    animation: confetti-fall 2s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(500px) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Start Screen */
+.start-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #4DD0E1, #26A69A, #AB47BC);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: gradient-shift 5s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0%, 100% { filter: hue-rotate(0deg); }
+    50% { filter: hue-rotate(20deg); }
+}
+
+.start-content {
+    background: rgba(255,255,255,0.95);
+    padding: 40px;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    text-align: center;
+    max-width: 600px;
+    border: 5px solid #1A237E;
+}
+
+.game-title {
+    font-size: 48px;
+    color: #1A237E;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.game-subtitle {
+    font-size: 24px;
+    color: #26A69A;
+    margin-bottom: 30px;
+}
+
+.difficulty-selection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.start-btn {
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #FF6B9D, #AB47BC);
+    color: white;
+    border: 4px solid #1A237E;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+.start-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.instructions {
+    background: #E1F5FE;
+    padding: 20px;
+    border-radius: 15px;
+    border: 3px solid #4DD0E1;
+}
+
+.instructions h3 {
+    color: #1A237E;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.instructions ul {
+    list-style: none;
+    text-align: left;
+    color: #1A237E;
+}
+
+.instructions li {
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.start-screen.hidden {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .target-word {
+        font-size: 60px;
+    }
+    
+    .typing-input {
+        font-size: 28px;
+        max-width: 90%;
+    }
+    
+    .game-title {
+        font-size: 36px;
+    }
+    
+    .start-btn {
+        padding: 15px 30px;
+        font-size: 20px;
+    }
+    
+    .ollie-body {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .character-container {
+        left: 5%;
+    }
+}

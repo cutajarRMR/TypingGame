@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollie's Ocean Typing Adventure</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="ocean-game">
+        <!-- Header with score and controls -->
+        <div class="sky-header">
+            <div class="score-container">
+                <div class="pearl-counter">
+                    <span class="pearl-icon">💎</span>
+                    <span class="pearl-count">0</span>
+                </div>
+                <div class="level-indicator">
+                    <span class="level-text">Level: <span id="current-level">1</span></span>
+                </div>
+                <div class="high-score">
+                    <span class="trophy-icon">🏆</span>
+                    <span class="high-score-text">Best: <span id="high-score">0</span></span>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="sound-toggle" id="sound-toggle" aria-label="Toggle Sound">🔊</button>
+                <button class="menu-btn" id="menu-btn">Back to Menu</button>
+                <button class="reset-btn" id="reset-btn">New Game</button>
+            </div>
+        </div>
+
+        <!-- Main ocean container -->
+        <div class="ocean-container">
+            <!-- Animated background elements -->
+            <div class="background-layer">
+                <div class="kelp kelp-1"></div>
+                <div class="kelp kelp-2"></div>
+                <div class="kelp kelp-3"></div>
+                <div class="coral coral-1">🪸</div>
+                <div class="coral coral-2">🪸</div>
+            </div>
+
+            <!-- Bubbles animation -->
+            <div class="bubbles-layer" id="bubbles-layer">
+                <div class="bubble bubble-1"></div>
+                <div class="bubble bubble-2"></div>
+                <div class="bubble bubble-3"></div>
+                <div class="bubble bubble-4"></div>
+                <div class="bubble bubble-5"></div>
+                <div class="bubble bubble-6"></div>
+            </div>
+
+            <!-- Ollie the Octopus character -->
+            <div class="character-container">
+                <div class="ollie-octopus" id="ollie">
+                    <div class="ollie-body">
+                        <div class="ollie-eyes">
+                            <div class="eye eye-left">
+                                <div class="pupil"></div>
+                            </div>
+                            <div class="eye eye-right">
+                                <div class="pupil"></div>
+                            </div>
+                        </div>
+                        <div class="ollie-smile"></div>
+                    </div>
+                    <div class="tentacles">
+                        <div class="tentacle t1"></div>
+                        <div class="tentacle t2"></div>
+                        <div class="tentacle t3"></div>
+                        <div class="tentacle t4"></div>
+                    </div>
+                </div>
+                <div class="encouragement-bubble" id="encouragement"></div>
+            </div>
+
+            <!-- Word display and input area -->
+            <div class="word-display-area">
+                <div class="mode-indicator" id="mode-indicator">Type the letter!</div>
+                <div class="target-word-container">
+                    <h2 class="target-word" id="target-word">a</h2>
+                    <div class="typed-letters" id="typed-letters"></div>
+                </div>
+                <div class="input-container">
+                    <input 
+                        type="text" 
+                        class="typing-input" 
+                        id="typing-input" 
+                        autocomplete="off"
+                        autocapitalize="off"
+                        spellcheck="false"
+                        maxlength="30"
+                        aria-label="Type here"
+                        autofocus
+                    />
+                </div>
+                <div class="streak-indicator" id="streak-indicator">
+                    <span class="streak-star">⭐</span>
+                    <span class="streak-count">0</span> in a row!
+                </div>
+            </div>
+
+            <!-- Decorative swimming fish -->
+            <div class="decorative-elements">
+                <div class="swimming-fish fish-1">🐟</div>
+                <div class="swimming-fish fish-2">🐠</div>
+                <div class="swimming-fish fish-3">🐡</div>
+            </div>
+
+            <!-- Pearl collection animation container -->
+            <div class="pearl-animation-container" id="pearl-container"></div>
+
+            <!-- Celebration effects -->
+            <div class="celebration-layer" id="celebration-layer"></div>
+        </div>
+
+        <!-- Start screen overlay -->
+        <div class="start-screen" id="start-screen">
+            <div class="start-content">
+                <h1 class="game-title">🐙 Ollie's Ocean Typing Adventure 🌊</h1>
+                <p class="game-subtitle">Help Ollie collect pearls by typing letters and words!</p>
+                <div class="difficulty-selection">
+                    <button class="start-btn" data-mode="letters">Level 1: Letters</button>
+                    <button class="start-btn" data-mode="words">Level 2: Words</button>
+                    <button class="start-btn" data-mode="special">Level 3: Special Characters</button>
+                    <button class="start-btn" data-mode="password">Level 4: Hard Password</button>
+                </div>
+                <div class="instructions">
+                    <h3>How to Play:</h3>
+                    <ul>
+                        <li>🎯 Type exactly what you see on screen</li>
+                        <li>💎 Collect pearls for each correct answer</li>
+                        <li>⭐ Get bonus starfish for typing streaks</li>
+                        <li>🏆 Progress through numbered levels</li>
+                        <li>🎮 Level 1: Letters | Level 2: Words</li>
+                        <li>⚡ Level 3: Special Chars | Level 4: Hard Passwords!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="characters.js"></script>
+    <script src="words.js"></script>
+    <script src="sounds.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

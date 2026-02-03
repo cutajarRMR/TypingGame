@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollie's Ocean Typing Adventure</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Trebuchet MS', cursive, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            background: linear-gradient(to bottom, #87CEEB 0%, #4DD0E1 50%, #26A69A 100%);
+        }
+
+        /* Ocean Game Container */
+        .ocean-game {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header Styles */
+        .sky-header {
+            position: relative;
+            z-index: 100;
+            background: linear-gradient(to bottom, #FFE082 0%, #FFD54F 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .score-container {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .pearl-counter, .level-indicator, .high-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #1A237E;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+        }
+
+        .pearl-icon, .trophy-icon {
+            font-size: 32px;
+            animation: gentle-bounce 2s ease-in-out infinite;
+        }
+
+        .pearl-count {
+            min-width: 50px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .sound-toggle, .menu-btn, .reset-btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 3px solid #1A237E;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .sound-toggle {
+            background: white;
+            font-size: 24px;
+        }
+
+        .menu-btn {
+            background: #4DD0E1;
+            color: #1A237E;
+        }
+
+        .reset-btn {
+            background: #FF6B9D;
+            color: white;
+        }
+
+        .sound-toggle:hover, .menu-btn:hover, .reset-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Ocean Container */
+        .ocean-container {
+            position: relative;
+            height: calc(100vh - 70px);
+            background: linear-gradient(to bottom, #80DEEA 0%, #4DD0E1 30%, #26A69A 70%, #1A5F7A 100%);
+            overflow: hidden;
+        }
+
+        /* Background Layer */
+        .background-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .kelp {
+            position: absolute;
+            bottom: 0;
+            width: 40px;
+            height: 200px;
+            background: linear-gradient(to top, #2E7D32, #66BB6A);
+            border-radius: 20px 20px 0 0;
+            animation: sway 4s ease-in-out infinite;
+        }
+
+        .kelp-1 { left: 10%; animation-delay: 0s; }
+        .kelp-2 { left: 25%; height: 250px; animation-delay: 1s; }
+        .kelp-3 { right: 15%; height: 180px; animation-delay: 2s; }
+
+        .coral {
+            position: absolute;
+            bottom: 20px;
+            font-size: 60px;
+            animation: sway 6s ease-in-out infinite;
+        }
+
+        .coral-1 { left: 5%; animation-delay: 0.5s; }
+        .coral-2 { right: 8%; animation-delay: 2s; }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+
+        /* Bubbles */
+        .bubbles-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.3));
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: rise linear infinite;
+        }
+
+        .bubble-1 { left: 10%; width: 20px; height: 20px; animation-duration: 8s; animation-delay: 0s; }
+        .bubble-2 { left: 30%; width: 15px; height: 15px; animation-duration: 6s; animation-delay: 2s; }
+        .bubble-3 { left: 50%; width: 25px; height: 25px; animation-duration: 10s; animation-delay: 1s; }
+        .bubble-4 { left: 70%; width: 18px; height: 18px; animation-duration: 7s; animation-delay: 3s; }
+        .bubble-5 { left: 85%; width: 22px; height: 22px; animation-duration: 9s; animation-delay: 4s; }
+        .bubble-6 { left: 60%; width: 16px; height: 16px; animation-duration: 7.5s; animation-delay: 5s; }
+
+        @keyframes rise {
+            0% { bottom: -50px; opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { bottom: 100%; opacity: 0; }
+        }
+
+        /* Ollie the Octopus */
+        .character-container {
+            position: absolute;
+            left: 10%;
+            top: 20%;
+            z-index: 10;
+        }
+
+        .ollie-octopus {
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .ollie-body {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, #AB47BC, #EC407A);
+            border-radius: 50% 50% 45% 45%;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .ollie-eyes {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+        }
+
+        .eye {
+            width: 35px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            border: 3px solid #1A237E;
+        }
+
+        .pupil {
+            width: 15px;
+            height: 15px;
+            background: #1A237E;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: blink 4s ease-in-out infinite;
+        }
+
+        .ollie-smile {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 30px;
+            border: 4px solid #1A237E;
+            border-top: none;
+            border-radius: 0 0 60px 60px;
+        }
+
+        .tentacles {
+            position: absolute;
+            top: 140px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .tentacle {
+            width: 25px;
+            height: 80px;
+            background: linear-gradient(to bottom, #AB47BC, #EC407A);
+            border-radius: 0 0 15px 15px;
+            animation: wave-tentacle 2s ease-in-out infinite;
+        }
+
+        .tentacle.t1 { animation-delay: 0s; }
+        .tentacle.t2 { animation-delay: 0.3s; }
+        .tentacle.t3 { animation-delay: 0.6s; }
+        .tentacle.t4 { animation-delay: 0.9s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes wave-tentacle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        @keyframes blink {
+            0%, 95%, 100% { transform: translate(-50%, -50%) scaleY(1); }
+            97% { transform: translate(-50%, -50%) scaleY(0.1); }
+        }
+
+        @keyframes gentle-bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        /* Encouragement Bubble */
+        .encouragement-bubble {
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 3px solid #1A237E;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1A237E;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .encouragement-bubble.show {
+            opacity: 1;
+        }
+
+        .encouragement-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 15px solid white;
+        }
+
+        /* Word Display */
+        .word-display-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 20;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .mode-indicator {
+            font-size: 22px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .target-word-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .target-word {
+            font-size: 80px;
+            color: #FFD54F;
+            font-weight: bold;
+            text-shadow: 4px 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(255,213,79,0.5);
+            margin-bottom: 10px;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { 
+                transform: scale(1);
+                text-shadow: 4px 4px 8px rgba(0,0,0,0.5), 0 0 20px rgba(255,213,79,0.5);
+            }
+            50% { 
+                transform: scale(1.05);
+                text-shadow: 4px 4px 8px rgba(0,0,0,0.5), 0 0 30px rgba(255,213,79,0.8);
+            }
+        }
+
+        .typed-letters {
+            font-size: 24px;
+            color: #B2DFDB;
+            min-height: 30px;
+            font-weight: bold;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .typing-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            font-size: 36px;
+            text-align: center;
+            border: 5px solid #1A237E;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.95);
+            color: #1A237E;
+            font-family: inherit;
+            font-weight: bold;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .typing-input:focus {
+            border-color: #FF6B9D;
+            box-shadow: 0 8px 20px rgba(255,107,157,0.5), 0 0 0 5px rgba(255,107,157,0.2);
+        }
+
+        .typing-input.correct {
+            animation: correct-pulse 0.5s;
+        }
+
+        .typing-input.incorrect {
+            animation: shake 0.5s;
+        }
+
+        @keyframes correct-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); background: #C8E6C9; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .streak-indicator {
+            margin-top: 20px;
+            font-size: 28px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .streak-indicator.show {
+            opacity: 1;
+            animation: streak-bounce 0.5s;
+        }
+
+        .streak-star {
+            display: inline-block;
+            animation: rotate-star 2s linear infinite;
+        }
+
+        @keyframes rotate-star {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes streak-bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Decorative Fish */
+        .decorative-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .swimming-fish {
+            position: absolute;
+            font-size: 40px;
+            animation: swim linear infinite;
+        }
+
+        .fish-1 { top: 15%; animation-duration: 20s; animation-delay: 0s; }
+        .fish-2 { top: 60%; animation-duration: 25s; animation-delay: 5s; }
+        .fish-3 { top: 80%; animation-duration: 18s; animation-delay: 10s; }
+
+        @keyframes swim {
+            0% { left: -100px; transform: scaleX(1); }
+            49% { transform: scaleX(1); }
+            50% { transform: scaleX(-1); }
+            100% { left: calc(100% + 100px); transform: scaleX(-1); }
+        }
+
+        /* Animations */
+        .pearl-animation-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .animated-pearl {
+            position: absolute;
+            font-size: 40px;
+            animation: collect-pearl 1.5s ease-out forwards;
+        }
+
+        @keyframes collect-pearl {
+            0% { transform: translate(0, 0) scale(0); opacity: 0; }
+            30% { opacity: 1; transform: translate(0, -50px) scale(1.5); }
+            100% { opacity: 0; transform: translate(var(--target-x), var(--target-y)) scale(0.5); }
+        }
+
+        .celebration-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 60;
+            pointer-events: none;
+        }
+
+        .confetti {
+            position: absolute;
+            font-size: 30px;
+            animation: confetti-fall 2s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+        }
+
+        /* Start Screen */
+        .start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4DD0E1, #26A69A, #AB47BC);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: gradient-shift 5s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(20deg); }
+        }
+
+        .start-content {
+            background: rgba(255,255,255,0.95);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            text-align: center;
+            max-width: 600px;
+            border: 5px solid #1A237E;
+        }
+
+        .game-title {
+            font-size: 48px;
+            color: #1A237E;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .game-subtitle {
+            font-size: 24px;
+            color: #26A69A;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-selection {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .start-btn {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FF6B9D, #AB47BC);
+            color: white;
+            border: 4px solid #1A237E;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        .instructions {
+            background: #E1F5FE;
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #4DD0E1;
+        }
+
+        .instructions h3 {
+            color: #1A237E;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .instructions ul {
+            list-style: none;
+            text-align: left;
+            color: #1A237E;
+        }
+
+        .instructions li {
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .start-screen.hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .target-word { font-size: 60px; }
+            .typing-input { font-size: 28px; max-width: 90%; }
+            .game-title { font-size: 36px; }
+            .start-btn { padding: 15px 30px; font-size: 20px; }
+            .ollie-body { width: 100px; height: 100px; }
+            .character-container { left: 5%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ocean-game">
+        <div class="sky-header">
+            <div class="score-container">
+                <div class="pearl-counter">
+                    <span class="pearl-icon">💎</span>
+                    <span class="pearl-count">0</span>
+                </div>
+                <div class="level-indicator">
+                    <span class="level-text">Level: <span id="current-level">1</span></span>
+                </div>
+                <div class="high-score">
+                    <span class="trophy-icon">🏆</span>
+                    <span class="high-score-text">Best: <span id="high-score">0</span></span>
+                </div>
+            </div>
+            <div class="controls">
+                <button class="sound-toggle" id="sound-toggle">🔊</button>
+                <button class="menu-btn" id="menu-btn">Back to Menu</button>
+                <button class="reset-btn" id="reset-btn">New Game</button>
+            </div>
+        </div>
+
+        <div class="ocean-container">
+            <div class="background-layer">
+                <div class="kelp kelp-1"></div>
+                <div class="kelp kelp-2"></div>
+                <div class="kelp kelp-3"></div>
+                <div class="coral coral-1">🪸</div>
+                <div class="coral coral-2">🪸</div>
+            </div>
+
+            <div class="bubbles-layer" id="bubbles-layer">
+                <div class="bubble bubble-1"></div>
+                <div class="bubble bubble-2"></div>
+                <div class="bubble bubble-3"></div>
+                <div class="bubble bubble-4"></div>
+                <div class="bubble bubble-5"></div>
+                <div class="bubble bubble-6"></div>
+            </div>
+
+            <div class="character-container">
+                <div class="ollie-octopus" id="ollie">
+                    <div class="ollie-body">
+                        <div class="ollie-eyes">
+                            <div class="eye eye-left"><div class="pupil"></div></div>
+                            <div class="eye eye-right"><div class="pupil"></div></div>
+                        </div>
+                        <div class="ollie-smile"></div>
+                    </div>
+                    <div class="tentacles">
+                        <div class="tentacle t1"></div>
+                        <div class="tentacle t2"></div>
+                        <div class="tentacle t3"></div>
+                        <div class="tentacle t4"></div>
+                    </div>
+                </div>
+                <div class="encouragement-bubble" id="encouragement"></div>
+            </div>
+
+            <div class="word-display-area">
+                <div class="mode-indicator" id="mode-indicator">Type the letter!</div>
+                <div class="target-word-container">
+                    <h2 class="target-word" id="target-word">a</h2>
+                    <div class="typed-letters" id="typed-letters"></div>
+                </div>
+                <div class="input-container">
+                    <input type="text" class="typing-input" id="typing-input" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30" autofocus />
+                </div>
+                <div class="streak-indicator" id="streak-indicator">
+                    <span class="streak-star">⭐</span>
+                    <span class="streak-count">0</span> in a row!
+                </div>
+            </div>
+
+            <div class="decorative-elements">
+                <div class="swimming-fish fish-1">🐟</div>
+                <div class="swimming-fish fish-2">🐠</div>
+                <div class="swimming-fish fish-3">🐡</div>
+            </div>
+
+            <div class="pearl-animation-container" id="pearl-container"></div>
+            <div class="celebration-layer" id="celebration-layer"></div>
+        </div>
+
+        <div class="start-screen" id="start-screen">
+            <div class="start-content">
+                <h1 class="game-title">🐙 Ollie's Ocean Typing Adventure 🌊</h1>
+                <p class="game-subtitle">Help Ollie collect pearls by typing letters and words!</p>
+                <div class="difficulty-selection">
+                    <button class="start-btn" data-mode="letters">Level 1: Letters</button>
+                    <button class="start-btn" data-mode="words">Level 2: Words</button>
+                    <button class="start-btn" data-mode="special">Level 3: Special Characters</button>
+                    <button class="start-btn" data-mode="password">Level 4: Hard Password</button>
+                </div>
+                <div class="instructions">
+                    <h3>How to Play:</h3>
+                    <ul>
+                        <li>🎯 Type exactly what you see on screen</li>
+                        <li>💎 Collect pearls for each correct answer</li>
+                        <li>⭐ Get bonus starfish for typing streaks</li>
+                        <li>🏆 Progress through numbered levels</li>
+                        <li>🎮 Level 1: Letters | Level 2: Words</li>
+                        <li>⚡ Level 3: Special Chars | Level 4: Hard Passwords!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Character sets
+        const CHARACTER_SETS = {
+            vowels: ['a', 'e', 'i', 'o', 'u'],
+            commonConsonants: ['b', 'c', 'd', 'f', 'g', 'h', 'l', 'm', 'n', 'p', 'r', 's', 't'],
+            lessCommonConsonants: ['j', 'k', 'q', 'v', 'w', 'x', 'y', 'z'],
+            uppercase: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
+                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
+            numbers: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            punctuation: ['.', ',', '!', '?'],
+            specialBasic: ['@', '#', '$', '%', '&', '*'],
+            specialAdvanced: ['(', ')', '[', ']', '{', '}', '<', '>'],
+            specialSymbols: ['+', '-', '=', '_', '/', '\\', '|'],
+            specialPunctuation: [':', ';', '"', "'", '~', '`', '^']
+        };
+
+        function getCharacterSet(level) {
+            switch(level) {
+                case 1: return CHARACTER_SETS.vowels;
+                case 2: return [...CHARACTER_SETS.vowels, ...CHARACTER_SETS.commonConsonants];
+                case 3: return [...CHARACTER_SETS.vowels, ...CHARACTER_SETS.commonConsonants, ...CHARACTER_SETS.lessCommonConsonants];
+                case 4: return CHARACTER_SETS.uppercase;
+                case 5: return CHARACTER_SETS.numbers;
+                case 6: return CHARACTER_SETS.punctuation;
+                default: return [...CHARACTER_SETS.vowels, ...CHARACTER_SETS.commonConsonants];
+            }
+        }
+
+        function getRandomCharacter(level) {
+            const characters = getCharacterSet(level);
+            return characters[Math.floor(Math.random() * characters.length)];
+        }
+
+        function getSpecialCharacterSet(level) {
+            switch(level) {
+                case 1: return CHARACTER_SETS.specialBasic;
+                case 2: return [...CHARACTER_SETS.specialBasic, ...CHARACTER_SETS.specialAdvanced];
+                case 3: return [...CHARACTER_SETS.specialBasic, ...CHARACTER_SETS.specialAdvanced, ...CHARACTER_SETS.specialSymbols];
+                case 4: return [...CHARACTER_SETS.specialBasic, ...CHARACTER_SETS.specialAdvanced, ...CHARACTER_SETS.specialSymbols, ...CHARACTER_SETS.specialPunctuation];
+                default: return CHARACTER_SETS.specialBasic;
+            }
+        }
+
+        function getRandomSpecialCharacter(level) {
+            const characters = getSpecialCharacterSet(level);
+            return characters[Math.floor(Math.random() * characters.length)];
+        }
+
+        function generatePassword(level) {
+            let length = 3 + level;
+            if (length > 12) length = 12;
+            
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz'.split('');
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+            const numbers = '0123456789'.split('');
+            const special = ['@', '#', '$', '%', '&', '*', '!', '?', '+', '-', '=', '_', '(', ')', '[', ']', '{', '}'];
+            
+            const allChars = [...lowercase, ...uppercase, ...numbers, ...special];
+            
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += allChars[Math.floor(Math.random() * allChars.length)];
+            }
+            return password;
+        }
+
+        // Word lists
+        const WORD_LISTS = {
+            easy: {
+                animals: ['cat', 'dog', 'fox', 'owl', 'bee', 'ant', 'bat', 'pig', 'hen', 'rat'],
+                colors: ['red', 'tan', 'sky'],
+                nature: ['sun', 'sea', 'sky', 'mud', 'ice', 'dew'],
+                body: ['eye', 'arm', 'leg', 'ear', 'toe'],
+                food: ['egg', 'pie', 'jam', 'tea', 'ham'],
+                actions: ['run', 'hop', 'sit', 'dig', 'hug', 'jog'],
+                things: ['box', 'cup', 'toy', 'pen', 'key', 'bag', 'hat', 'bed']
+            },
+            medium: {
+                animals: ['bird', 'fish', 'duck', 'frog', 'crab', 'bear', 'deer', 'seal', 'lamb'],
+                colors: ['blue', 'pink', 'gold', 'gray'],
+                nature: ['tree', 'pond', 'sand', 'rain', 'wind', 'moon', 'star', 'rock', 'leaf'],
+                body: ['hand', 'foot', 'nose', 'face', 'hair', 'knee'],
+                food: ['milk', 'cake', 'plum', 'pear', 'corn', 'rice', 'soup', 'taco'],
+                actions: ['jump', 'swim', 'walk', 'play', 'sing', 'draw', 'help', 'look'],
+                things: ['book', 'ball', 'door', 'home', 'boat', 'bell', 'rock', 'gift', 'flag']
+            },
+            hard: {
+                animals: ['whale', 'shark', 'tiger', 'horse', 'mouse', 'snake', 'sheep', 'zebra'],
+                colors: ['green', 'white', 'brown', 'black'],
+                nature: ['ocean', 'river', 'beach', 'plant', 'cloud', 'grass', 'stone', 'water'],
+                body: ['belly', 'thumb', 'teeth', 'chest'],
+                food: ['apple', 'bread', 'lemon', 'melon', 'pizza', 'berry', 'candy', 'peach'],
+                actions: ['dance', 'climb', 'laugh', 'sleep', 'think', 'count', 'smile'],
+                things: ['house', 'chair', 'table', 'truck', 'train', 'plate', 'spoon', 'beach', 'phone']
+            }
+        };
+
+        function getRandomWord(difficulty) {
+            const wordSet = WORD_LISTS[difficulty];
+            const allWords = [];
+            for (let category in wordSet) {
+                allWords.push(...wordSet[category]);
+            }
+            return allWords[Math.floor(Math.random() * allWords.length)];
+        }
+
+        // Sound Manager
+        class SoundManager {
+            constructor() {
+                this.enabled = true;
+                this.audioContext = null;
+                this.initAudioContext();
+            }
+
+            initAudioContext() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch (e) {
+                    console.log('Web Audio API not supported');
+                }
+            }
+
+            playTone(frequency, duration, type = 'sine') {
+                if (!this.enabled || !this.audioContext) return;
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+                oscillator.frequency.value = frequency;
+                oscillator.type = type;
+                gainNode.gain.setValueAtTime(0.3, this.audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration);
+            }
+
+            playCorrect() {
+                if (!this.enabled || !this.audioContext) return;
+                this.playTone(800, 0.1, 'sine');
+                setTimeout(() => this.playTone(1000, 0.1, 'sine'), 50);
+            }
+
+            playIncorrect() {
+                if (!this.enabled || !this.audioContext) return;
+                this.playTone(200, 0.2, 'sine');
+            }
+
+            playPearlCollect() {
+                if (!this.enabled || !this.audioContext) return;
+                this.playTone(1200, 0.15, 'triangle');
+                setTimeout(() => this.playTone(1600, 0.1, 'triangle'), 80);
+            }
+
+            playStreak() {
+                if (!this.enabled || !this.audioContext) return;
+                const frequencies = [523, 659, 784, 1047];
+                frequencies.forEach((freq, index) => {
+                    setTimeout(() => this.playTone(freq, 0.2, 'triangle'), index * 80);
+                });
+            }
+
+            playLevelUp() {
+                if (!this.enabled || !this.audioContext) return;
+                const melody = [523, 587, 659, 784, 880, 1047];
+                melody.forEach((freq, index) => {
+                    setTimeout(() => this.playTone(freq, 0.15, 'square'), index * 100);
+                });
+            }
+
+            playTreasure() {
+                if (!this.enabled || !this.audioContext) return;
+                for (let i = 0; i < 10; i++) {
+                    setTimeout(() => this.playTone(800 + (i * 100), 0.1, 'triangle'), i * 50);
+                }
+            }
+
+            toggle() {
+                this.enabled = !this.enabled;
+                return this.enabled;
+            }
+
+            isEnabled() {
+                return this.enabled;
+            }
+        }
+
+        const soundManager = new SoundManager();
+
+        // Game State
+        const gameState = {
+            mode: 'letters',
+            level: 1,
+            pearls: 0,
+            highScore: 0,
+            streak: 0,
+            currentTarget: '',
+            characterLevel: 1,
+            wordDifficulty: 'easy',
+            specialLevel: 1,
+            passwordLevel: 1,
+            totalCorrect: 0,
+            totalAttempts: 0
+        };
+
+        let elements = {};
+
+        function init() {
+            elements = {
+                startScreen: document.getElementById('start-screen'),
+                targetWord: document.getElementById('target-word'),
+                typingInput: document.getElementById('typing-input'),
+                pearlCount: document.querySelector('.pearl-count'),
+                currentLevel: document.getElementById('current-level'),
+                highScore: document.getElementById('high-score'),
+                encouragement: document.getElementById('encouragement'),
+                streakIndicator: document.getElementById('streak-indicator'),
+                streakCount: document.querySelector('.streak-count'),
+                modeIndicator: document.getElementById('mode-indicator'),
+                soundToggle: document.getElementById('sound-toggle'),
+                menuBtn: document.getElementById('menu-btn'),
+                resetBtn: document.getElementById('reset-btn'),
+                pearlContainer: document.getElementById('pearl-container'),
+                celebrationLayer: document.getElementById('celebration-layer'),
+                ollie: document.getElementById('ollie'),
+                typedLetters: document.getElementById('typed-letters')
+            };
+
+            const savedHighScore = localStorage.getItem('typingGameHighScore');
+            if (savedHighScore) {
+                gameState.highScore = parseInt(savedHighScore);
+                elements.highScore.textContent = gameState.highScore;
+            }
+
+            document.querySelectorAll('.start-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const mode = e.target.dataset.mode;
+                    startGame(mode);
+                });
+            });
+
+            elements.typingInput.addEventListener('input', handleInput);
+            elements.soundToggle.addEventListener('click', toggleSound);
+            elements.menuBtn.addEventListener('click', backToMenu);
+            elements.resetBtn.addEventListener('click', resetGame);
+
+            document.querySelector('.ocean-container').addEventListener('click', () => {
+                elements.typingInput.focus();
+            });
+        }
+
+        function startGame(mode) {
+            gameState.mode = mode;
+            gameState.level = 1;
+            gameState.pearls = 0;
+            gameState.streak = 0;
+            gameState.characterLevel = 1;
+            gameState.wordDifficulty = 'easy';
+            gameState.specialLevel = 1;
+            gameState.passwordLevel = 1;
+            gameState.totalCorrect = 0;
+            gameState.totalAttempts = 0;
+
+            elements.startScreen.classList.add('hidden');
+            elements.typingInput.focus();
+
+            updateDisplay();
+            nextTarget();
+        }
+
+        function nextTarget() {
+            elements.typingInput.value = '';
+            elements.typedLetters.textContent = '';
+
+            if (gameState.mode === 'letters') {
+                gameState.currentTarget = getRandomCharacter(gameState.characterLevel);
+                elements.modeIndicator.textContent = 'Level 1 - Type the letter!';
+            } else if (gameState.mode === 'words') {
+                gameState.currentTarget = getRandomWord(gameState.wordDifficulty);
+                elements.modeIndicator.textContent = 'Level 2 - Type the word!';
+            } else if (gameState.mode === 'special') {
+                gameState.currentTarget = getRandomSpecialCharacter(gameState.specialLevel);
+                elements.modeIndicator.textContent = 'Level 3 - Type the special character!';
+            } else if (gameState.mode === 'password') {
+                gameState.currentTarget = generatePassword(gameState.passwordLevel);
+                elements.modeIndicator.textContent = 'Level 4 - Type the hard password!';
+            }
+
+            elements.targetWord.textContent = gameState.currentTarget;
+        }
+
+        function handleInput(e) {
+            const caseSensitiveModes = ['special', 'password'];
+            const typed = caseSensitiveModes.includes(gameState.mode) ? e.target.value : e.target.value.toLowerCase();
+            const target = caseSensitiveModes.includes(gameState.mode) ? gameState.currentTarget : gameState.currentTarget.toLowerCase();
+
+            if (gameState.mode === 'words' || gameState.mode === 'password') {
+                let display = '';
+                for (let i = 0; i < typed.length; i++) {
+                    if (i < target.length && typed[i] === target[i]) {
+                        display += typed[i];
+                    }
+                }
+                elements.typedLetters.textContent = display;
+            }
+
+            if (typed === target) {
+                handleCorrect();
+            } else if (typed.length >= target.length) {
+                handleIncorrect();
+            } else {
+                if (!target.startsWith(typed)) {
+                    handleIncorrect();
+                }
+            }
+        }
+
+        function handleCorrect() {
+            gameState.totalCorrect++;
+            gameState.totalAttempts++;
+            gameState.streak++;
+
+            let pearlsEarned = 1;
+            
+            if (gameState.mode === 'words') {
+                if (gameState.wordDifficulty === 'medium') pearlsEarned = 2;
+                if (gameState.wordDifficulty === 'hard') pearlsEarned = 3;
+            } else if (gameState.mode === 'password') {
+                pearlsEarned = Math.min(gameState.currentTarget.length, 10);
+            }
+
+            if (gameState.streak > 0 && gameState.streak % 5 === 0) {
+                pearlsEarned += 5;
+                showEncouragement('⭐ Streak Bonus! +5 Pearls!');
+                soundManager.playStreak();
+                createConfetti();
+            } else {
+                soundManager.playCorrect();
+                showEncouragement(getRandomEncouragement());
+            }
+
+            gameState.pearls += pearlsEarned;
+
+            elements.typingInput.classList.add('correct');
+            setTimeout(() => elements.typingInput.classList.remove('correct'), 500);
+
+            animatePearls(pearlsEarned);
+            updateDisplay();
+            checkLevelUp();
+            checkTreasureMilestones();
+
+            setTimeout(() => nextTarget(), 800);
+        }
+
+        function handleIncorrect() {
+            gameState.totalAttempts++;
+            gameState.streak = 0;
+
+            soundManager.playIncorrect();
+            
+            elements.typingInput.classList.add('incorrect');
+            setTimeout(() => elements.typingInput.classList.remove('incorrect'), 500);
+
+            showEncouragement('Try again! 💙');
+            elements.typingInput.value = '';
+            elements.typedLetters.textContent = '';
+
+            updateDisplay();
+        }
+
+        function showEncouragement(message) {
+            elements.encouragement.textContent = message;
+            elements.encouragement.classList.add('show');
+            setTimeout(() => elements.encouragement.classList.remove('show'), 2000);
+        }
+
+        function getRandomEncouragement() {
+            const messages = ['Great job! 🎉', 'Perfect! 🌟', 'You did it! 🐙', 'Awesome! 🌊', 'Super! 💎', 
+                             'Well done! 🐠', 'Fantastic! ⭐', 'Keep going! 🐟', 'Amazing! 🦀', 'Wonderful! 🐚'];
+            return messages[Math.floor(Math.random() * messages.length)];
+        }
+
+        function animatePearls(count) {
+            soundManager.playPearlCollect();
+            
+            const inputRect = elements.typingInput.getBoundingClientRect();
+            const counterRect = elements.pearlCount.getBoundingClientRect();
+
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const pearl = document.createElement('div');
+                    pearl.className = 'animated-pearl';
+                    pearl.textContent = '💎';
+                    
+                    pearl.style.left = inputRect.left + inputRect.width / 2 + 'px';
+                    pearl.style.top = inputRect.top + inputRect.height / 2 + 'px';
+                    
+                    const targetX = counterRect.left - inputRect.left;
+                    const targetY = counterRect.top - inputRect.top;
+                    
+                    pearl.style.setProperty('--target-x', targetX + 'px');
+                    pearl.style.setProperty('--target-y', targetY + 'px');
+                    
+                    elements.pearlContainer.appendChild(pearl);
+                    setTimeout(() => pearl.remove(), 1500);
+                }, i * 100);
+            }
+        }
+
+        function createConfetti() {
+            const confettiSymbols = ['⭐', '💎', '🐚', '🐠', '🌟'];
+            
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.textContent = confettiSymbols[Math.floor(Math.random() * confettiSymbols.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-50px';
+                    
+                    elements.celebrationLayer.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 2000);
+                }, i * 50);
+            }
+        }
+
+        function checkLevelUp() {
+            const correctNeededForLevelUp = gameState.level * 10;
+            
+            if (gameState.totalCorrect >= correctNeededForLevelUp) {
+                gameState.level++;
+                
+                if (gameState.mode === 'letters') {
+                    if (gameState.characterLevel < 6) gameState.characterLevel++;
+                } else if (gameState.mode === 'special') {
+                    if (gameState.specialLevel < 4) gameState.specialLevel++;
+                } else if (gameState.mode === 'password') {
+                    if (gameState.passwordLevel < 7) gameState.passwordLevel++;
+                } else {
+                    if (gameState.level > 20 && gameState.wordDifficulty === 'easy') {
+                        gameState.wordDifficulty = 'medium';
+                    } else if (gameState.level > 40 && gameState.wordDifficulty === 'medium') {
+                        gameState.wordDifficulty = 'hard';
+                    }
+                }
+                
+                soundManager.playLevelUp();
+                showEncouragement('🎉 Level Up! Now Level ' + gameState.level + '!');
+                createConfetti();
+                updateDisplay();
+            }
+        }
+
+        function checkTreasureMilestones() {
+            const milestones = [25, 50, 100, 150, 200, 300, 500];
+            
+            if (milestones.includes(gameState.pearls)) {
+                soundManager.playTreasure();
+                showEncouragement('🏆 Treasure Unlocked! ' + gameState.pearls + ' Pearls!');
+                setTimeout(() => createConfetti(), 300);
+                setTimeout(() => createConfetti(), 600);
+            }
+        }
+
+        function updateDisplay() {
+            elements.pearlCount.textContent = gameState.pearls;
+            elements.currentLevel.textContent = gameState.level;
+            
+            if (gameState.streak >= 3) {
+                elements.streakCount.textContent = gameState.streak;
+                elements.streakIndicator.classList.add('show');
+            } else {
+                elements.streakIndicator.classList.remove('show');
+            }
+
+            if (gameState.pearls > gameState.highScore) {
+                gameState.highScore = gameState.pearls;
+                elements.highScore.textContent = gameState.highScore;
+                localStorage.setItem('typingGameHighScore', gameState.highScore);
+            }
+        }
+
+        function toggleSound() {
+            const enabled = soundManager.toggle();
+            elements.soundToggle.textContent = enabled ? '🔊' : '🔇';
+            if (enabled) soundManager.playCorrect();
+        }
+
+        function backToMenu() {
+            if (confirm('Go back to menu? Your current progress will be saved as high score.')) {
+                elements.startScreen.classList.remove('hidden');
+                elements.typingInput.value = '';
+                elements.typedLetters.textContent = '';
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Start a new game? Your current progress will be lost.')) {
+                gameState.pearls = 0;
+                gameState.level = 1;
+                gameState.streak = 0;
+                gameState.characterLevel = 1;
+                gameState.wordDifficulty = 'easy';
+                gameState.specialLevel = 1;
+                gameState.passwordLevel = 1;
+                gameState.totalCorrect = 0;
+                gameState.totalAttempts = 0;
+                
+                updateDisplay();
+                nextTarget();
+                elements.typingInput.focus();
+                showEncouragement("Let's go! 🐙");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
